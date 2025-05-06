@@ -14,13 +14,21 @@ export const authOptions: NextAuthOptions = {
         password: {},
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Missing email or password");
+        }
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials?.email },
+          where: { email: credentials.email },
         });
+
         if (!user) throw new Error("No user found");
+
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) throw new Error("Incorrect password");
-        return { id: user.id, email: user.email, role: user.role };
+
+        // ✅ Fix: Convert `id` to string
+        return { id: user.id.toString(), email: user.email, role: user.role };
       },
     }),
   ],

@@ -17,6 +17,7 @@
     "paths": {
       "@/*": ["*"]
     },
+    "types": ["next-auth"],
     "plugins": [
       {
         "name": "next"
@@ -28,7 +29,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "types"
+    "types/**/*.d.ts"
   ],
   "exclude": ["node_modules"]
 }
