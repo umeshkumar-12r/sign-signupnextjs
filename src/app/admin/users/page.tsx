@@ -45,8 +45,8 @@ export default async function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center items-center gap-2">
-                      <RoleForm userId={user.id} currentRole={user.role} />
-                      <DeleteButton userId={user.id} />
+                    <RoleForm userId={user.id.toString()} currentRole={user.role} />
+                    <DeleteButton userId={user.id.toString()} />
                     </div>
                   </td>
                 </tr>
