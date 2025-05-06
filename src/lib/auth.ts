@@ -10,8 +10,8 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -24,11 +24,15 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) throw new Error("No user found");
 
-        const valid = await bcrypt.compare(credentials.password, user.password);
-        if (!valid) throw new Error("Incorrect password");
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) throw new Error("Incorrect password");
 
-        // ✅ Fix: Convert `id` to string
-        return { id: user.id.toString(), email: user.email, role: user.role };
+        // Convert numeric ID to string for token/session compatibility
+        return {
+          id: user.id.toString(),
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
@@ -41,8 +45,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.role = token.role;
+      session.user.id = token.id as string;
+      session.user.role = token.role as "USER" | "MODERATOR" | "ADMIN";
       return session;
     },
   },
